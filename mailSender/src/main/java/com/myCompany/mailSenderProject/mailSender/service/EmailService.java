@@ -5,12 +5,10 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class EmailService implements EmailServiceInterface{
@@ -22,9 +20,8 @@ public class EmailService implements EmailServiceInterface{
     private String user_email;
 
     private void addAttachments(MimeMessageHelper helper, EmailDTO emailDTO) throws MessagingException {
-        for (String filePath: emailDTO.attachments()) {
-            FileSystemResource file = new FileSystemResource(new File(filePath));
-            helper.addAttachment(file.getFilename(), file);
+        for (MultipartFile file: emailDTO.attachments()) {
+            helper.addAttachment(file.getOriginalFilename(), file);
         }
     }
 
